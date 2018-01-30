@@ -1,4 +1,70 @@
 public with sharing class DataAccessor {
+    public static List<Training_Path__c> GetUserAccessibleTrainingPaths(List<Training_Path__c> paths,
+                                                                        String email)
+    {
+        List<Training_Path__c> results=new List<Training_Path__c>();
+
+        String domain=email.split('@')[1];
+        List<Training_Path_Candidate_Restriction__c> tpcrs=
+                        [select id, Candidate_Restriction__r.Include_Emails__c, 
+                                    Candidate_Restriction__r.Exclude_Emails__c,
+                                    Training_Path__c
+                         from Training_Path_Candidate_Restriction__c
+                         where Candidate_Restriction__r.Domain__c=:domain
+                         and Training_Path__c in :paths];
+
+        // only one Training_Path_Candidate_Restriction__c per domain
+        Map<Id, Training_Path_Candidate_Restriction__c> tpcrByPathId=new 
+                    Map<Id, Training_Path_Candidate_Restriction__c>();
+
+        for (Training_Path_Candidate_Restriction__c tpcr : tpcrs)
+        {
+            tpcrByPathId.put(tpcr.Training_Path__c, tpcr);
+        }
+
+        for (Training_Path__c path : paths)
+        {
+            Training_Path_Candidate_Restriction__c tpcr=tpcrByPathId.get(path.id);
+            // default is allow access unless there is a restriction
+            Boolean emailOkay=true;
+            if (null!=tpcr)
+            {
+
+                if (null!=tpcr.Candidate_Restriction__r.Include_Emails__c) 
+                {
+                    // don't allow unless named
+                    emailOkay=false;
+                    List<String> includes=tpcr.Candidate_Restriction__r.Include_Emails__c.split(',');
+                    Set<String> includesSet=new Set<String>();
+                    includesSet.addAll(includes);
+                    if (includesSet.contains(email))
+                    {
+                        emailOkay=true;
+                    }
+                }
+                else if (null!=tpcr.Candidate_Restriction__r.Exclude_Emails__c) 
+                {
+                    // allow unless named
+                    emailOkay=true;
+                    List<String> excludes=tpcr.Candidate_Restriction__r.Include_Emails__c.split(',');
+                    Set<String> excludesSet=new Set<String>();
+                    excludesSet.addAll(excludes);
+                    if (excludesSet.contains(email))
+                    {
+                        emailOkay=false;
+                    }
+                }   
+            }
+        
+            if (emailOkay)
+            {
+                results.add(path);
+            }
+        }
+
+        return results;
+    }
+
     public static Training_Path__c GetTrainingPath(String pathIdStr) 
     {
         return GetTrainingPaths(new List<Id> {(Id) pathIdStr})[0];
@@ -6,7 +72,8 @@ public with sharing class DataAccessor {
 
     public static List<Training_Path__c> GetTrainingPaths(List<Id> pathIds) 
     {
-        List<Training_Path__c> paths=[select id, Name, Description__c, Badge__c,
+        List<Training_Path__c> paths=[select id, Name, Summary__c, Description__c, Namespace__c, Badge__c, Topics__c,
+                                        Hours_Between_Attempts__c,
                                       (select id, Name, Description__c from Training_Steps__r)
                                       from Training_Path__c
                                       where id IN :pathIds];
@@ -22,7 +89,7 @@ public with sharing class DataAccessor {
     public static Candidate_Path__c GetOrCreateCandidatePath(Training_Path__c path, String email)
     {
         Candidate_Path__c result=null;
-        List<Candidate_Path__c> cps=[select id, Complete__c,
+        List<Candidate_Path__c> cps=[select id, Complete__c, Last_Attempt_Time__c,
                                      (select id, Complete__c, Training_Step__r.Index__c,
                                      Training_Step__r.Name, Training_Step__r.Description__c
                                       from Candidate_Steps__r
@@ -58,6 +125,7 @@ public with sharing class DataAccessor {
     public static Training_Step__c GetTrainingStep(String stepIdStr)
     {
         Training_Step__c step=[select id, Name, Description__c, 
+                                    Admin_Mark__c,
                                     Heading_1__c, Content_1__c,
                                     Heading_2__c, Content_2__c,
                                     Heading_3__c, Content_3__c,
@@ -96,7 +164,8 @@ public with sharing class DataAccessor {
     
     public static List<Candidate_Badge__c> GetUserBadges(String email)
     {
-        return [select Id, Name, Badge__r.Name
+        return [select Id, Name, Badge__r.Name, Badge__r.Description__c,
+                        CreatedDate
                 from Candidate_Badge__c 
                 where Candidate_Email__c=:email];
     }

@@ -1,7 +1,7 @@
 @RestResource(urlMapping='/TrainAPI/*')
 global class TrainingRestAPI 
 {
-    private static TrainingServiceIF trainingService=new TrainingServiceLocalImpl();
+    private static TrainingServiceIF trainingService=new TrainingServiceImpl();
 
     @HttpPost 
     global static void TrainingRequest(String method, String email, String pathIdStr, 
@@ -29,6 +29,11 @@ global class TrainingRestAPI
         {
             Boolean passedPath=trainingService.PassStep(pathIdStr, stepIdStr, email);
             result=JSON.serialize(passedPath);
+        }
+        else if (method=='FailStepAndWait')
+        {
+            TrainingPath path=trainingService.FailStepAndWait(pathIdStr, stepIdStr, email);
+            result=JSON.serialize(path);
         }
         else if (method=='GetUserInfo')
         {

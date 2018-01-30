@@ -70,6 +70,15 @@
         <type>Checkbox</type>
     </fields>
     <fields>
+        <fullName>Last_Attempt_Time__c</fullName>
+        <externalId>false</externalId>
+        <label>Last Attempt Time</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>DateTime</type>
+    </fields>
+    <fields>
         <fullName>Percent_Complete__c</fullName>
         <externalId>false</externalId>
         <formula>Steps_Completed__c / Step_Count__c</formula>

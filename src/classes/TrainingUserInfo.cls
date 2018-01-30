@@ -16,5 +16,25 @@ global with sharing class TrainingUserInfo
     public Integer points {get; set;}  
 
     @AuraEnabled      
-    public Integer badges {get; set;}  
+    public Integer badgeCount {get; set;}  
+    
+    @AuraEnabled      
+    public List<UserBadge> badges {get; set;}  
+
+    public TrainingUserInfo()
+    {
+        badges=new List<UserBadge>();
+    }
+
+    public class UserBadge
+    {
+        @AuraEnabled
+        public String name {get; set;}
+
+        @AuraEnabled
+        public String description {get; set;}
+
+        @AuraEnabled
+        public DateTime whenEarned {get; set;}
+    }
 }

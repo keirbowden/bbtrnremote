@@ -51,6 +51,15 @@
     <enableSearch>true</enableSearch>
     <enableSharing>true</enableSharing>
     <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>Description__c</fullName>
+        <description>Description of the badge.</description>
+        <externalId>false</externalId>
+        <label>Description</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
+    </fields>
     <label>Badge</label>
     <listViews>
         <fullName>All</fullName>

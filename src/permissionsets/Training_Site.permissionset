@@ -6,6 +6,11 @@
     </classAccesses>
     <fieldPermissions>
         <editable>true</editable>
+        <field>Badge__c.Description__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>Candidate_Badge__c.Candidate_Email__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -22,6 +27,11 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>Candidate_Path__c.Complete__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Candidate_Path__c.Last_Attempt_Time__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -65,8 +75,23 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
+        <editable>true</editable>
+        <field>Training_Path__c.Hours_Between_Attempts__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Training_Path__c.Namespace__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
         <editable>false</editable>
         <field>Training_Path__c.Step_Count__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Training_Path__c.Summary__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -82,6 +107,11 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>Training_Question__c.Question__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Training_Step__c.Admin_Mark__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

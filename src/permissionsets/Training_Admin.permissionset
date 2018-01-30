@@ -5,55 +5,11 @@
         <enabled>false</enabled>
     </classAccesses>
     <classAccesses>
-        <apexClass>ChangePasswordController</apexClass>
-        <enabled>false</enabled>
-    </classAccesses>
-    <classAccesses>
-        <apexClass>ChangePasswordControllerTest</apexClass>
-        <enabled>false</enabled>
-    </classAccesses>
-    <classAccesses>
         <apexClass>DataAccessor</apexClass>
         <enabled>false</enabled>
     </classAccesses>
     <classAccesses>
-        <apexClass>ForgotPasswordController</apexClass>
-        <enabled>false</enabled>
-    </classAccesses>
-    <classAccesses>
-        <apexClass>ForgotPasswordControllerTest</apexClass>
-        <enabled>false</enabled>
-    </classAccesses>
-    <classAccesses>
-        <apexClass>MyProfilePageController</apexClass>
-        <enabled>false</enabled>
-    </classAccesses>
-    <classAccesses>
-        <apexClass>MyProfilePageControllerTest</apexClass>
-        <enabled>false</enabled>
-    </classAccesses>
-    <classAccesses>
-        <apexClass>SiteLoginController</apexClass>
-        <enabled>false</enabled>
-    </classAccesses>
-    <classAccesses>
-        <apexClass>SiteLoginControllerTest</apexClass>
-        <enabled>false</enabled>
-    </classAccesses>
-    <classAccesses>
-        <apexClass>SiteRegisterController</apexClass>
-        <enabled>false</enabled>
-    </classAccesses>
-    <classAccesses>
-        <apexClass>SiteRegisterControllerTest</apexClass>
-        <enabled>false</enabled>
-    </classAccesses>
-    <classAccesses>
         <apexClass>TrainingPath</apexClass>
-        <enabled>false</enabled>
-    </classAccesses>
-    <classAccesses>
-        <apexClass>TrainingPathREST</apexClass>
         <enabled>false</enabled>
     </classAccesses>
     <classAccesses>
@@ -65,13 +21,18 @@
         <enabled>false</enabled>
     </classAccesses>
     <classAccesses>
-        <apexClass>TrainingServiceLocalImpl</apexClass>
+        <apexClass>TrainingServiceImpl</apexClass>
         <enabled>false</enabled>
     </classAccesses>
     <classAccesses>
         <apexClass>TrainingUserInfo</apexClass>
         <enabled>false</enabled>
     </classAccesses>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Badge__c.Description__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
         <field>Candidate_Badge__c.Candidate_Email__c</field>
@@ -90,6 +51,11 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>Candidate_Path__c.Complete__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Candidate_Path__c.Last_Attempt_Time__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -148,10 +114,30 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
+        <editable>true</editable>
+        <field>Training_Path__c.Hours_Between_Attempts__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Training_Path__c.Namespace__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
         <editable>false</editable>
         <field>Training_Path__c.Step_Count__c</field>
         <readable>true</readable>
     </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Training_Path__c.Summary__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Training_Path__c.Topics__c</field>
+        <readable>true</readable>
+    </fieldPermissions>    
     <fieldPermissions>
         <editable>true</editable>
         <field>Training_Question__c.Correct_Answer_Index__c</field>
@@ -165,6 +151,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>Training_Question__c.Question__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Training_Step__c.Admin_Mark__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

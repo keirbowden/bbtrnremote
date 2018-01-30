@@ -21,6 +21,10 @@
                 <behavior>Edit</behavior>
                 <field>Index__c</field>
             </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>Admin_Mark__c</field>
+            </layoutItems>
         </layoutColumns>
         <style>TwoColumnsTopToBottom</style>
     </layoutSections>

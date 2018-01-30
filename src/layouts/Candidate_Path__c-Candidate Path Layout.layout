@@ -19,6 +19,10 @@
                 <behavior>Readonly</behavior>
                 <field>Complete__c</field>
             </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>Last_Attempt_Time__c</field>
+            </layoutItems>
         </layoutColumns>
         <layoutColumns>
             <layoutItems>

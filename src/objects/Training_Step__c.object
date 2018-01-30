@@ -52,6 +52,14 @@
     <enableSharing>true</enableSharing>
     <enableStreamingApi>true</enableStreamingApi>
     <fields>
+        <fullName>Admin_Mark__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Admin Mark</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
         <fullName>Content_1__c</fullName>
         <externalId>false</externalId>
         <label>Content 1</label>

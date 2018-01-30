@@ -73,6 +73,27 @@
         <visibleLines>25</visibleLines>
     </fields>
     <fields>
+        <fullName>Hours_Between_Attempts__c</fullName>
+        <externalId>false</externalId>
+        <label>Hours Between Attempts</label>
+        <precision>2</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Namespace__c</fullName>
+        <description>2 or 3 letter abbreviation of the namespace the path belongs to.</description>
+        <externalId>false</externalId>
+        <label>Namespace</label>
+        <length>3</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+    </fields>
+    <fields>
         <fullName>Step_Count__c</fullName>
         <externalId>false</externalId>
         <label>Step Count</label>
@@ -80,6 +101,25 @@
         <summaryOperation>count</summaryOperation>
         <trackTrending>false</trackTrending>
         <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>Summary__c</fullName>
+        <description>Brief summary of the path.</description>
+        <externalId>false</externalId>
+        <label>Summary</label>
+        <length>80</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+    </fields>
+    <fields>
+        <fullName>Topics__c</fullName>
+        <description>Comma separated list of topics for the training path.</description>
+        <externalId>false</externalId>
+        <label>Topics</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
     </fields>
     <label>Training Path</label>
     <listViews>
