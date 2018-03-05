@@ -75,9 +75,13 @@
         <layoutColumns/>
         <style>CustomLinks</style>
     </layoutSections>
-    <relatedLists>
+   <relatedLists>
         <fields>NAME</fields>
+        <fields>Description__c</fields>
+        <fields>Index__c</fields>
         <relatedList>Training_Step__c.Training_Path__c</relatedList>
+        <sortField>Index__c</sortField>
+        <sortOrder>Asc</sortOrder>
     </relatedLists>
     <relatedLists>
         <fields>NAME</fields>

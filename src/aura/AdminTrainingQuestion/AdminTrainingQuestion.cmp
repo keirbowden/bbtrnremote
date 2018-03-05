@@ -1,0 +1,114 @@
+<aura:component controller="AdminTrainingQuestionController" implements="flexipage:availableForAllPageTypes,force:hasRecordId,lightning:actionOverride"
+    extends="c:TrainingBase">
+    <aura:handler name="init" value="{!this}" action="{!c.init}" />
+
+    <aura:attribute name="question" type="Training_Question__c" />
+    <aura:attribute name="answers" type="Training_Answer__c[]" />
+    <aura:attribute name="answerCount" type="Integer" default="1" />
+    <aura:attribute name="unsavedChanges" type="Boolean" default="false" />
+
+    <div class="slds-page-header">
+        <div class="slds-grid">
+            <div class="slds-col slds-has-flexi-truncate">
+                <div class="slds-media slds-no-space slds-grow">
+                    <div class="slds-media__figure">
+                        <span class="slds-icon_container slds-icon-standard-opportunity" title="Description of icon when needed">
+                            <lightning:icon iconName="standard:lead_list" size="medium" />
+                        </span>
+                    </div>
+                    <div class="slds-media__body">
+                        <h1 class="slds-page-header__title slds-truncate slds-align-middle" title="Question">{!empty(v.question.Id)?'New Question':v.question.Name}</h1>
+                    </div>
+                </div>
+            </div>
+            <div class="slds-col slds-no-flex slds-grid slds-align-top">
+                <div class="slds-button-group" role="group">
+                    <lightning:button label="Back to Step" onclick="{!c.gotoStep}" />
+                    <lightning:button label="Save" onclick="{!c.save}" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="slds-section slds-is-open">
+        <h3 class="slds-section__title slds-theme_shade">
+            <span class="slds-truncate slds-p-horizontal_small" title="Section Title">Question Detail</span>
+        </h3>
+    </div>
+    <div class="slds-form slds-form_stacked slds-p-around_medium">
+        <div class="slds-form-element">
+            <lightning:input name="index" label="Index" type="number" value="{!v.question.Index__c}" />
+        </div>
+        <div class="slds-form-element">
+            <label class="slds-form-element__label">Question</label>
+            <lightning:inputRichText value="{!v.question.Question__c}" />
+        </div>
+    </div>
+    <div class="slds-section slds-is-open">
+        <h3 class="slds-section__title slds-theme_shade">
+            <span class="slds-truncate slds-p-horizontal_small" title="Section Title">Answers</span>
+            <aura:if isTrue="{!v.unsavedChanges}">
+                <span class="slds-badge slds-badge_lightest slds-m-left_large">
+                    <span class="slds-icon_container slds-icon-utility-moneybag slds-m-right_xx-small" title="Description of icon when needed">
+                        <lightning:icon iconName="utility:info" size="x-small" variant="error" />
+                    </span>
+                    You have unsaved changes
+                </span>
+            </aura:if>
+        </h3>
+    </div>
+
+    <lightning:layout multipleRows="true">
+        <lightning:layoutItem size="9" padding="horizontal-medium" class="slds-m-bottom_medium">
+            Answer
+        </lightning:layoutItem>
+        <lightning:layoutItem size="1" padding="horizontal-medium" class="slds-m-bottom_medium">
+            Correct?
+        </lightning:layoutItem>
+        <lightning:layoutItem size="2" padding="horizontal-medium" class="slds-m-bottom_medium">
+            Actions
+        </lightning:layoutItem>
+        <aura:iteration items="{!v.answers}" var="answer">
+            <lightning:layoutItem size="9" padding="horizontal-medium" class="slds-m-bottom_medium">
+                <div class="slds-form-element">
+                    <div>{!null==answer.Id?'New Answer':answer.Name}</div>
+                    <lightning:inputRichText value="{!answer.Answer__c}" /> 
+                </div>
+            </lightning:layoutItem>
+            <lightning:layoutItem size="1" padding="horizontal-medium" class="slds-m-bottom_medium">
+                <div class="slds-form-element">
+                    <lightning:input variant="label-hidden" name="correct" type="checkbox" label="Correct" checked="{!answer.Correct__c}" />
+                </div>
+            </lightning:layoutItem>
+            <lightning:layoutItem size="1" padding="horizontal-medium" class="slds-m-bottom_medium">
+                <div class="slds-button-group" role="group">
+                    <aura:if isTrue="{!answer.Index__c>1}">
+                        <lightning:buttonIcon alternativeText="Move to top" iconName="utility:jump_to_top" size="medium" 
+                                onclick="{!c.moveAnswer}" name="{!'top-' + answer.Index__c}" />
+                        <lightning:buttonIcon alternativeText="Move up " iconName="utility:chevronup" size="medium" 
+                                onclick="{!c.moveAnswer}" name="{!'up-' + answer.Index__c}"/>
+                    </aura:if>
+
+                    <aura:if isTrue="{!lessthan(answer.Index__c, v.answerCount)}">
+                        <lightning:buttonIcon alternativeText="Move down" iconName="utility:chevrondown" size="medium" 
+                            onclick="{!c.moveAnswer}" name="{!'down-' + answer.Index__c}"/>
+                        <lightning:buttonIcon alternativeText="Move to bottom" iconName="utility:jump_to_bottom" size="medium" 
+                            onclick="{!c.moveAnswer}" name="{!'bottom-' + answer.Index__c}"/>
+                        </aura:if>
+                    <aura:if isTrue="{!v.answerCount>1}">
+                        <lightning:buttonIcon alternativeText="Delete answer" iconName="utility:delete" size="medium" onclick="{!c.deleteAnswer}"
+                            name="{!'answer-' + answer.Index__c}" />
+                    </aura:if>
+                </div>
+            </lightning:layoutItem>
+        </aura:iteration>
+    </lightning:layout>
+    <lightning:layout multipleRows="true">
+        <lightning:layoutItem size="1" padding="horizontal-medium" class="slds-m-bottom_medium">
+            <div class="slds-button-group" role="group">
+                <lightning:buttonIcon alternativeText="Add answer" iconName="utility:add" size="medium" onclick="{!c.addAnswer}" />
+            </div>
+        </lightning:layoutItem>
+    </lightning:layout>
+    <c:TrainingWorking />
+</aura:component>

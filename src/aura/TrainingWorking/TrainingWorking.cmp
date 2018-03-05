@@ -1,0 +1,14 @@
+<aura:component >
+    <aura:attribute name="visible" type="Boolean" default="false" />
+    <aura:handler event="c:TrainingWorkingEvt" action="{!c.handleWorking}" />
+    
+    <aura:if isTrue="{!v.visible}">
+        <div class="slds-spinner_container">
+            <div role="status" class="slds-spinner slds-spinner_medium">
+                <span class="slds-assistive-text">Loading</span>
+                <div class="slds-spinner__dot-a"></div>
+                <div class="slds-spinner__dot-b"></div>
+            </div>
+        </div>
+    </aura:if>
+</aura:component>

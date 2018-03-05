@@ -46,7 +46,7 @@ public with sharing class DataAccessor {
                 {
                     // allow unless named
                     emailOkay=true;
-                    List<String> excludes=tpcr.Candidate_Restriction__r.Include_Emails__c.split(',');
+                    List<String> excludes=tpcr.Candidate_Restriction__r.Exclude_Emails__c.split(',');
                     Set<String> excludesSet=new Set<String>();
                     excludesSet.addAll(excludes);
                     if (excludesSet.contains(email))
@@ -169,4 +169,22 @@ public with sharing class DataAccessor {
                 from Candidate_Badge__c 
                 where Candidate_Email__c=:email];
     }
+
+    // Methods question/answer access methods
+    public static Training_Question__c GetQuestion(String questionIdStr) 
+    {
+        return [select id, Name, Question__c, Index__c, Correct_Answer_Index__c,
+                Training_Step__r.Id 
+                from Training_Question__c
+                where id=:questionIdStr];
+    }
+
+    public static List<Training_Answer__c> GetAnswers(Id questionId)
+    {
+        System.debug('Querying answers for question ' + questionId);
+        return [select Id, Name, Answer__c, Index__c
+                from Training_Answer__c 
+                where Training_Question__c=:questionId];
+    }
+    
 }

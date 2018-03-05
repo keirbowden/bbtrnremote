@@ -1,0 +1,5 @@
+<aura:component extensible="true">
+    <aura:registerEvent name="working" type="c:TrainingWorkingEvt" />
+        
+    {!v.body}        
+</aura:component>
