@@ -135,24 +135,31 @@
         var question=cmp.get('v.question');
         var answers=cmp.get('v.answers');
         question.sobjectType='Training_Question__c';
+        var correctCount=0;
         for (var idx=0, len=answers.length; idx<len; idx++) {
             answers[idx].sobjectType='Training_Answer__c';
             if (answers[idx].Correct__c) {
                 question.Correct_Answer_Index__c=answers[idx].Index__c;
+                correctCount++;
             }
         }
-        var qanda={question: question,
-                   answers : answers};
+        if (1!=correctCount) {
+            this.showToast('error', 'One answer must be marked as correct');
+        }
+        else {
+            var qanda={question: question,
+                       answers : answers};
 
-        var action=cmp.get('c.Save');
-        var qandaJSON=JSON.stringify(qanda);
-        action.setParams({qandaJSON: qandaJSON});
-        var helper=this;
-        action.setCallback(helper, function(response) {
-            helper.actionResponseHandler(response, cmp, helper, helper.saved);
-        });
-        $A.enqueueAction(action);
-        this.showWorking(cmp);
+            var action=cmp.get('c.Save');
+            var qandaJSON=JSON.stringify(qanda);
+            action.setParams({qandaJSON: qandaJSON});
+            var helper=this;
+            action.setCallback(helper, function(response) {
+                helper.actionResponseHandler(response, cmp, helper, helper.saved);
+            });
+            $A.enqueueAction(action);
+            this.showWorking(cmp);
+        }
     },
     gotoStep : function(cmp, ev) {
         if (cmp.get('v.unsavedChanges')) {
@@ -170,7 +177,7 @@
     },
     saved : function(cmp, helper, result) {
         helper.hideWorking(cmp);
-        helper.showToast('Saved question');
+        helper.showToast('info', 'Saved question');
         helper.clearUnsavedChanges(cmp, helper);
         helper.gotQuestionAndAnswers(cmp, helper, result);
     }
