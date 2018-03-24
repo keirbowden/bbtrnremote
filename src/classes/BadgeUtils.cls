@@ -23,12 +23,15 @@ public with sharing class BadgeUtils {
         List<Candidate_Badge__c> cBadges=new List<Candidate_Badge__c>();
         for (Training_Path__c trPath : trPaths) 
         {
-            List<Candidate_Path__c> cPathsForTr=completedByTrainingPathId.get(trPath.id);
-            for (Candidate_Path__c cPath : cPathsForTr)
+            if (null!=trPath.Badge__c)
             {
-                Candidate_Badge__c cBadge=new Candidate_Badge__c(Candidate_Email__c=cPath.Candidate_Email__c,
-                                                                 Badge__c=trPath.Badge__c);
-                cBadges.add(cBadge);
+                List<Candidate_Path__c> cPathsForTr=completedByTrainingPathId.get(trPath.id);
+                for (Candidate_Path__c cPath : cPathsForTr)
+                {
+                    Candidate_Badge__c cBadge=new Candidate_Badge__c(Candidate_Email__c=cPath.Candidate_Email__c,
+                                                                     Badge__c=trPath.Badge__c);
+                    cBadges.add(cBadge);
+                }
             }
         }
 
