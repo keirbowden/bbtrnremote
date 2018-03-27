@@ -8,54 +8,76 @@ public with sharing class DataAccessor {
         List<Training_Path_Candidate_Restriction__c> tpcrs=
                         [select id, Candidate_Restriction__r.Include_Emails__c, 
                                     Candidate_Restriction__r.Exclude_Emails__c,
+                                    Candidate_Restriction__r.Domain__c,
                                     Training_Path__c
                          from Training_Path_Candidate_Restriction__c
-                         where Candidate_Restriction__r.Domain__c=:domain
-                         and Training_Path__c in :paths];
+                         where Training_Path__c in :paths];
 
         // only one Training_Path_Candidate_Restriction__c per domain
-        Map<Id, Training_Path_Candidate_Restriction__c> tpcrByPathId=new 
-                    Map<Id, Training_Path_Candidate_Restriction__c>();
+        Map<Id, List<Training_Path_Candidate_Restriction__c>> tpcrsByPathId=new 
+                    Map<Id, List<Training_Path_Candidate_Restriction__c>>();
 
         for (Training_Path_Candidate_Restriction__c tpcr : tpcrs)
         {
-            tpcrByPathId.put(tpcr.Training_Path__c, tpcr);
+            List<Training_Path_Candidate_Restriction__c> tpcrsForPath=tpcrsByPathId.get(tpcr.Training_Path__c);
+            if (null==tpcrsForPath)
+            {
+                tpcrsForPath=new List<Training_Path_Candidate_Restriction__c>();
+                tpcrsByPathId.put(tpcr.Training_Path__c, tpcrsForPath);
+            }
+            tpcrsForPath.add(tpcr);
         }
 
         for (Training_Path__c path : paths)
         {
-            Training_Path_Candidate_Restriction__c tpcr=tpcrByPathId.get(path.id);
             // default is allow access unless there is a restriction
             Boolean emailOkay=true;
-            if (null!=tpcr)
+            List<Training_Path_Candidate_Restriction__c> tpcrsForPath=tpcrsByPathId.get(path.id);
+            if (null!=tpcrsForPath)
             {
-
-                if (null!=tpcr.Candidate_Restriction__r.Include_Emails__c) 
+                // we have at least one restriction - assume the user isn't allowed access
+                for (Training_Path_Candidate_Restriction__c tpcr : tpcrsForPath)
                 {
-                    // don't allow unless named
                     emailOkay=false;
-                    List<String> includes=tpcr.Candidate_Restriction__r.Include_Emails__c.split(',');
-                    Set<String> includesSet=new Set<String>();
-                    includesSet.addAll(includes);
-                    if (includesSet.contains(email))
+
+                    // if the domains are the same, check further. If not, no access
+                    if (tpcr.Candidate_Restriction__r.Domain__c==domain)
                     {
-                        emailOkay=true;
+                        if (null!=tpcr.Candidate_Restriction__r.Include_Emails__c) 
+                        {
+                            // don't allow unless named
+                            emailOkay=false;
+                            List<String> includes=tpcr.Candidate_Restriction__r.Include_Emails__c.split(',');
+                            Set<String> includesSet=new Set<String>();
+                            includesSet.addAll(includes);
+                            if (includesSet.contains(email))
+                            {
+                                emailOkay=true;
+                            }
+                        }
+                        else if (null!=tpcr.Candidate_Restriction__r.Exclude_Emails__c) 
+                        {
+                            // allow unless named
+                            emailOkay=true;
+                            List<String> excludes=tpcr.Candidate_Restriction__r.Exclude_Emails__c.split(',');
+                            Set<String> excludesSet=new Set<String>();
+                            excludesSet.addAll(excludes);
+                            if (excludesSet.contains(email))
+                            {
+                                emailOkay=false;
+                            }
+                        }   
+
+                        // If the user has been allowwd access via a restriction, exit the process here.
+                        // Otherwise we may inadvertently remove access due to another domain
+                        if (emailOkay)
+                        {
+                            break;
+                        }
                     }
                 }
-                else if (null!=tpcr.Candidate_Restriction__r.Exclude_Emails__c) 
-                {
-                    // allow unless named
-                    emailOkay=true;
-                    List<String> excludes=tpcr.Candidate_Restriction__r.Exclude_Emails__c.split(',');
-                    Set<String> excludesSet=new Set<String>();
-                    excludesSet.addAll(excludes);
-                    if (excludesSet.contains(email))
-                    {
-                        emailOkay=false;
-                    }
-                }   
             }
-        
+
             if (emailOkay)
             {
                 results.add(path);
