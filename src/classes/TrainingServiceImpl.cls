@@ -135,7 +135,7 @@ public with sharing class TrainingServiceImpl implements TrainingServiceIF
 
     // Marks a user as having passed a step. If this means that
     // the user has passed the path, returns true
-    public Boolean PassStep(String pathIdStr, String stepIdStr, String email)
+    public TrainingResult PassStep(String pathIdStr, String stepIdStr, String email)
     {
         Candidate_Path__c cPath=DataAccessor.GetOrCreateCandidatePath(pathIdStr, email);
 
@@ -147,7 +147,14 @@ public with sharing class TrainingServiceImpl implements TrainingServiceIF
 
         cPath=DataAccessor.GetOrCreateCandidatePath(pathIdStr, email);
         
-        return cPath.Complete__c;
+        TrainingResult result=new TrainingResult();
+        result.result=cPath.Complete__c;
+        if (result.result)
+        {
+            Training_Path__c trPath=DataAccessor.GetTrainingPath(pathIdStr);
+            result.message=trPath.Pass_Message__c;
+        }
+        return result;
     }
     
     public TrainingPath FailStepAndWait(String pathIdStr, String stepIdStr, String email)

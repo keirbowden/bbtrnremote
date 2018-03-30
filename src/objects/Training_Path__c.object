@@ -94,6 +94,15 @@
         <type>Text</type>
     </fields>
     <fields>
+        <fullName>Pass_Message__c</fullName>
+        <externalId>false</externalId>
+        <label>Pass Message</label>
+        <length>32768</length>
+        <trackTrending>false</trackTrending>
+        <type>Html</type>
+        <visibleLines>25</visibleLines>
+    </fields>
+    <fields>
         <fullName>Step_Count__c</fullName>
         <externalId>false</externalId>
         <label>Step Count</label>

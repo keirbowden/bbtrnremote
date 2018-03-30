@@ -68,8 +68,8 @@ private class TrainingServiceImpl_Test
 
         TrainingServiceImpl service=new TrainingServiceImpl();
 
-        Boolean passed=service.PassStep(tp1.Id, steps[0].id, 'test@test.test');
-        System.assertEquals(true, passed);
+        TrainingResult result=service.PassStep(tp1.Id, steps[0].id, 'test@test.test');
+        System.assertEquals(true, result.result);
     }
 
     @IsTest

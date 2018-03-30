@@ -34,8 +34,8 @@ global class TrainingRestAPI
         }
         else if (method==PASS_STEP_METHOD)
         {
-            Boolean passedPath=trainingService.PassStep(pathIdStr, stepIdStr, email);
-            result=JSON.serialize(passedPath);
+            TrainingResult trResult=trainingService.PassStep(pathIdStr, stepIdStr, email);
+            result=JSON.serialize(trResult);
         }
         else if (method==FAIL_STEP_AND_WAIT_METHOD)
         {

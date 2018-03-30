@@ -95,8 +95,8 @@ public with sharing class DataAccessor {
     public static List<Training_Path__c> GetTrainingPaths(List<Id> pathIds) 
     {
         List<Training_Path__c> paths=[select id, Name, Summary__c, Description__c, Namespace__c, Badge__c, Topics__c,
-                                        Hours_Between_Attempts__c,
-                                      (select id, Name, Description__c from Training_Steps__r)
+                                        Hours_Between_Attempts__c, Pass_Message__c,                           
+                                     (select id, Name, Description__c from Training_Steps__r)
                                       from Training_Path__c
                                       where id IN :pathIds];
         return paths;
