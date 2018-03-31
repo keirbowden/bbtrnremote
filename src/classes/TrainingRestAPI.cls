@@ -8,13 +8,37 @@ global class TrainingRestAPI
     public static final String FAIL_STEP_AND_WAIT_METHOD='FailStepAndWait';
     public static final String GET_USER_INFO_METHOD='GetUserInfo';
 
+    @TestVisible
+    private static final Decimal MY_VERSION=1.0;
+
     private static TrainingServiceIF trainingService=new TrainingServiceImpl();
 
     @HttpPost 
-    global static void TrainingRequest(String method, String email, String pathIdStr, 
-                                         String stepIdStr)
+    global static void TrainingRequest(String method, String email, Decimal version, 
+                                        String pathIdStr, String stepIdStr)
     {
         String result;
+
+        Integer supportedMajor=(Integer) MY_VERSION;
+        Integer desiredMajor=(Integer) version;
+        if (supportedMajor!=desiredMajor)
+        {
+            CalloutException ce = new CalloutException();
+            String message='';
+            if ( (null==desiredMajor) || (supportedMajor > desiredMajor) )
+            {
+                message='This endpoint requires an updated client - please install a V' + 
+                        supportedMajor + '.x client from https://github.com/keirbowden/bbtrn';
+            }
+            else 
+            {
+                message='This endpoint is out of date for your client version - please as the admin to update to V' + 
+                        desiredMajor + '.x version from https://github.com/keirbowden/bbtrnremote';
+            }
+            ce.setMessage(message);
+
+            throw ce;
+        }
 
         System.debug('Method = ' + method);
         if (method==GET_ALL_PATHS_METHOD)
