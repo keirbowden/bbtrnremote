@@ -43,7 +43,13 @@ public with sharing class DataAccessor {
                     // if the domains are the same, check further. If not, no access
                     if (tpcr.Candidate_Restriction__r.Domain__c==domain)
                     {
-                        if (null!=tpcr.Candidate_Restriction__r.Include_Emails__c) 
+                        if ( (null==tpcr.Candidate_Restriction__r.Include_Emails__c) && 
+                             (null==tpcr.Candidate_Restriction__r.Exclude_Emails__c) )
+                        {
+                            // no restriction, everyone from this domain is allowed access
+                            emailOkay=true;
+                        }
+                        else if (null!=tpcr.Candidate_Restriction__r.Include_Emails__c) 
                         {
                             // don't allow unless named
                             emailOkay=false;
