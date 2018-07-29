@@ -16,6 +16,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>Candidate_Badge__c.Earned_Count__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>Candidate_Badge__c.User__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -77,6 +82,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>Training_Path__c.Hours_Between_Attempts__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Training_Path__c.Multi_Complete__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

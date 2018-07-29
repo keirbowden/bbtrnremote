@@ -7,15 +7,17 @@ global class TrainingRestAPI
     public static final String PASS_STEP_METHOD='PassStep';
     public static final String FAIL_STEP_AND_WAIT_METHOD='FailStepAndWait';
     public static final String GET_USER_INFO_METHOD='GetUserInfo';
+    public static final String SEARCH_PATHS_FREE_METHOD='SearchPathsFree';
+    public static final String SEARCH_PATHS_TOPICS_METHOD='SearchPathsTopics';
 
     @TestVisible
-    private static final Decimal MY_VERSION=1.0;
+    private static final Decimal MY_VERSION=2.0;
 
     private static TrainingServiceIF trainingService=new TrainingServiceImpl();
 
     @HttpPost 
     global static void TrainingRequest(String method, String email, Decimal version, 
-                                        String pathIdStr, String stepIdStr)
+                                        String pathIdStr, String stepIdStr, String searchTerms)
     {
         String result;
 
@@ -71,7 +73,17 @@ global class TrainingRestAPI
             TrainingUserInfo info=trainingService.GetUserInfo(email);
             result=JSON.serialize(info);  
         }
+        else if (method==SEARCH_PATHS_FREE_METHOD)
+        {
+            List<TrainingPath> paths=trainingService.SearchPathsFree(email, searchTerms);
+            result=JSON.serialize(paths);
+        }
+        else if (method==SEARCH_PATHS_TOPICS_METHOD)
+        {
+            List<TrainingPath> paths=trainingService.SearchPathsTopics(email, searchTerms);
+            result=JSON.serialize(paths);
+        }
+
         RestContext.response.responseBody = Blob.valueOf(result);
     }
-
 }

@@ -101,7 +101,7 @@ public with sharing class DataAccessor {
     public static List<Training_Path__c> GetTrainingPaths(List<Id> pathIds) 
     {
         List<Training_Path__c> paths=[select id, Name, Summary__c, Description__c, Namespace__c, Badge__c, Topics__c,
-                                        Hours_Between_Attempts__c, Pass_Message__c,                           
+                                        Hours_Between_Attempts__c, Multi_Complete__c, Pass_Message__c,                           
                                      (select id, Name, Description__c from Training_Steps__r)
                                       from Training_Path__c
                                       where id IN :pathIds];
@@ -125,6 +125,7 @@ public with sharing class DataAccessor {
                                      from Candidate_Path__c
                                      where Training_Path__c=:path.Id
                                      and Candidate_Email__c=:email];
+
         if (cps.IsEmpty())
         {
             Candidate_Path__c cp=new Candidate_Path__c(Training_Path__c=path.Id,
@@ -192,10 +193,25 @@ public with sharing class DataAccessor {
     
     public static List<Candidate_Badge__c> GetUserBadges(String email)
     {
-        return [select Id, Name, Badge__r.Name, Badge__r.Description__c,
+        return [select Id, Earned_Count__c, Name, Badge__r.Name, Badge__r.Description__c,
                         CreatedDate
                 from Candidate_Badge__c 
                 where Candidate_Email__c=:email];
+    }
+
+    public static List<Candidate_Badge__c> GetCandidateBadges(Set<Id> badgeIdsSet)
+    {
+        List<Id> badgeIds=new List<Id>();
+        badgeIds.addAll(badgeIdsSet);
+        return GetCandidateBadges(badgeIds);
+    }
+
+    public static List<Candidate_Badge__c> GetCandidateBadges(List<Id> badgeIds)
+    {
+        return [select Id, Name, Badge__c, Earned_Count__c, Candidate_Email__c,
+                        CreatedDate
+                from Candidate_Badge__c 
+                where Badge__c in :badgeIds];
     }
 
     // Methods question/answer access methods

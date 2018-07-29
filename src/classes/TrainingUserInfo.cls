@@ -36,5 +36,8 @@ global with sharing class TrainingUserInfo
 
         @AuraEnabled
         public DateTime whenEarned {get; set;}
+
+        @AuraEnabled
+        public Integer earnedCount {get; set;}
     }
 }

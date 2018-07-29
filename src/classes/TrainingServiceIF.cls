@@ -20,4 +20,10 @@ public interface TrainingServiceIF {
         
     // Gets the user infomation, such as badges, points etc
     TrainingUserInfo GetUserInfo(String email);
+
+    // Free text search for training pathers matching the space seperated terms
+    List<TrainingPath> SearchPathsFree(String email, String searchTerms);
+
+    // Topics search for training pathers matching the space seperated terms
+    List<TrainingPath> SearchPathsTopics(String email, String searchTerms);
 }

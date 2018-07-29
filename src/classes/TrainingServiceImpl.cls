@@ -7,40 +7,8 @@ public with sharing class TrainingServiceImpl implements TrainingServiceIF
                                      from Training_Path__c
                                      order by CreatedDate];
 
-        List<Training_Path__c>  paths=DataAccessor.GetUserAccessibleTrainingPaths(allPaths, email);
-
-        List<Candidate_Path__c> userPaths=[select id, Percent_Complete__c, Training_Path__c
-                                           from Candidate_Path__c
-                                           where Candidate_Email__c=:email];
-
-
-        Map<Id, Candidate_Path__c> cpsByTPId=new Map<Id, Candidate_Path__c>();
-        for (Candidate_Path__c cp : userPaths)
-        {
-            cpsByTPId.put(cp.Training_Path__c, cp);
-        }
-
-        List<TrainingPath> result=new List<TrainingPath>();
-        for (Training_Path__c tp : paths)
-        {
-            TrainingPath path=new TrainingPath();
-            path.name=tp.Name;
-            path.summary=tp.Summary__c;
-            path.namespace=tp.Namespace__c;
-            path.topics=tp.Topics__c;
-            Decimal percentComplete=0;
-            Candidate_Path__c cp=cpsByTPId.get(tp.Id);
-            if (null!=cp)
-            {
-                percentComplete=cp.Percent_Complete__c;
-            }
-
-            path.pathId=tp.Id;
-            path.percentComplete=percentComplete.intValue();
-
-            result.add(path);
-        }
-
+        List<TrainingPath> result=this.RestrictToPathsForEmail(allPaths, email);
+        
         return result;
     }
 
@@ -153,6 +121,11 @@ public with sharing class TrainingServiceImpl implements TrainingServiceIF
         {
             Training_Path__c trPath=DataAccessor.GetTrainingPath(pathIdStr);
             result.message=trPath.Pass_Message__c;
+
+            if (trPath.Multi_Complete__c)
+            {
+                delete cPath;
+            }
         }
         return result;
     }
@@ -172,6 +145,7 @@ public with sharing class TrainingServiceImpl implements TrainingServiceIF
         TrainingUserInfo info=new TrainingUserInfo();
         info.email=email;
         info.points=12000;
+        info.badgeCount=0;
         List<Candidate_Badge__c> cBadges=DataAccessor.GetUserBadges(email);
         for (Candidate_Badge__c cBadge : cBadges)
         {
@@ -179,10 +153,121 @@ public with sharing class TrainingServiceImpl implements TrainingServiceIF
             badge.name=cBadge.Badge__r.Name;
             badge.description=cBadge.Badge__r.Description__c;
             badge.whenEarned=cBadge.CreatedDate;
+            badge.earnedCount=(null==cBadge.Earned_Count__c?1:cBadge.Earned_Count__c.intValue());
             info.badges.add(badge);
+            info.badgeCount+=badge.earnedCount;
         }
-        info.badgeCount=info.badges.size();
 
         return info;
     }
+
+    // Free text search for training pathers matching the space seperated terms
+    public List<TrainingPath> SearchPathsFree(String email, String searchTerms)
+    {
+        List<String> terms=searchTerms.split(' ');
+        String query='FIND \'';
+        String termsClause='';
+        for (String term : terms) 
+        {
+            termsClause+=' OR ' + term;
+        }
+        query+=termsClause.substring(4) + '\'' + 
+                ' IN ALL FIELDS RETURNING Training_Path__c (id, Name, Summary__c, Namespace__c, Topics__c) ' + 
+                ', Training_Step__c(id, Training_Path__c) ';
+        List<List<sObject>> matches=search.query(query);
+
+        Map<Id, Training_Path__c> allPathsById=new Map<Id, Training_Path__c>();
+        for (Training_Path__c path : (List<Training_Path__c>)matches[0]) 
+        {
+            allPathsById.put(path.Id, path);
+        }
+
+        Set<Id> pathIdsFromSteps=new Set<Id>();
+        for (Training_Step__c step : (List<Training_Step__c>)matches[1]) 
+        {
+            pathIdsFromSteps.add(step.Training_Path__c);
+        }
+        List<Id> pathIds=new List<Id>();
+        pathIds.addAll(pathIdsFromSteps);
+        List<Training_Path__c> matchesByStep=[select id, Name, Summary__c, Namespace__c, Topics__c 
+                                            from Training_Path__c
+                                            where id in :pathIds
+                                            order by CreatedDate];
+
+        for (Training_Path__c path : matchesByStep)
+        {
+            allPathsById.put(path.Id, path);
+        }
+
+        List<TrainingPath> result=this.RestrictToPathsForEmail(allPathsById.values(), email);
+        
+        return result;
+    }
+
+    // Topics search for training paths matching the space seperated topics
+    public List<TrainingPath> SearchPathsTopics(String email, String searchTerms)
+    {
+        String[] terms=searchTerms.split(' ');
+
+        String query=' select id, Name, Summary__c, Namespace__c, Topics__c ' +
+                     ' from Training_Path__c ' +
+                     ' where ';
+
+        String whereClause='';
+        for (Integer idx=0; idx<terms.size(); idx++) 
+        {
+            String term=terms[idx];
+            whereClause+=' OR ' +
+                         ' Topics__c LIKE \'%' + term + '%\' ';
+        }
+
+        query+=whereClause.substring(4) + 
+                ' order by CreatedDate ';
+
+        List<Training_Path__c> allPaths=Database.query(query);
+
+        List<TrainingPath> result=this.RestrictToPathsForEmail(allPaths, email);
+        
+        return result;
+    }
+
+    private List<TrainingPath> RestrictToPathsForEmail(List<Training_Path__c> allPaths, String email)
+    {
+        List<Training_Path__c>  paths=DataAccessor.GetUserAccessibleTrainingPaths(allPaths, email);
+
+        List<Candidate_Path__c> userPaths=[select id, Percent_Complete__c, Training_Path__c
+                                           from Candidate_Path__c
+                                           where Candidate_Email__c=:email];
+
+        Map<Id, Candidate_Path__c> cpsByTPId=new Map<Id, Candidate_Path__c>();
+        for (Candidate_Path__c cp : userPaths)
+        {
+            cpsByTPId.put(cp.Training_Path__c, cp);
+        }
+
+        List<TrainingPath> result=new List<TrainingPath>();
+        for (Training_Path__c tp : paths)
+        {
+            TrainingPath path=new TrainingPath();
+            path.name=tp.Name;
+            path.summary=tp.Summary__c;
+            path.namespace=tp.Namespace__c;
+            path.topics=tp.Topics__c;
+            Decimal percentComplete=0;
+            Candidate_Path__c cp=cpsByTPId.get(tp.Id);
+            if (null!=cp)
+            {
+                percentComplete=cp.Percent_Complete__c;
+            }
+
+            path.pathId=tp.Id;
+            path.percentComplete=percentComplete.intValue();
+
+            result.add(path);
+        }
+
+        return result;
+
+    }
+
 }

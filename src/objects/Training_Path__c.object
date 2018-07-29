@@ -84,6 +84,15 @@
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>Multi_Complete__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>Can users complete this path multiple times?</description>
+        <externalId>false</externalId>
+        <label>Multi-Complete</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
         <fullName>Namespace__c</fullName>
         <description>2 or 3 letter abbreviation of the namespace the path belongs to.</description>
         <externalId>false</externalId>
