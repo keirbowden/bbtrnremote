@@ -154,7 +154,7 @@ public with sharing class DataAccessor {
     public static Training_Step__c GetTrainingStep(String stepIdStr)
     {
         Training_Step__c step=[select id, Name, Description__c, 
-                                    Admin_Mark__c,
+                                    Admin_Mark__c, Training_Path__c, 
                                     Heading_1__c, Content_1__c,
                                     Heading_2__c, Content_2__c,
                                     Heading_3__c, Content_3__c,

@@ -1,0 +1,10 @@
+<aura:component controller="AdminTrainingStepController" extends="c:TrainingBase" 
+		implements="flexipage:availableForAllPageTypes, force:hasRecordId, lightning:actionOverride,
+                    force:lightningQuickActionWithoutHeader">
+                    
+    <aura:handler name="init" value="{!this}" action="{!c.init}" />
+    
+    <div class="slds-text-heading--large slds-m-top--xx-large slds-text-align--center">Cloning Step</div>
+    <c:TrainingWorking visible="true" />
+
+</aura:component>
